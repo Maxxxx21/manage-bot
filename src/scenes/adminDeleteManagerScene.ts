@@ -18,7 +18,7 @@ export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
         } else if (isManager) {
             return ctx.wizard.next();
         }
-    }, 
+    },
     async (ctx) => {
         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
         const keyboard = createManagerKeybord(allManagers);
