@@ -52,6 +52,19 @@ export const adminGetTotalScene = new Scenes.WizardScene<MyContext>(
     "adminGetTotalScene",
 
     async (ctx) => {
+        const userId = await ctx.repository.getUser(ctx.from!.id);
+        const roleManagerId = await ctx.repository.getRoleIdByName(`👨‍💼Админ`);
+        const isManager = await ctx.repository.checkRegisteredUser(userId, roleManagerId as number);
+
+        if (!isManager) {
+            await ctx.reply(`Эта опция доступна только для 👨‍💼Админа. Чтобы продолжить, пожалуйста, зарегистрируйтесь, отправив команду: /register.`, keyboards.startKeyboard);
+            return ctx.scene.leave();
+        } else if (isManager) {
+            return ctx.wizard.next();
+        }
+    }, 
+
+    async (ctx) => {
         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
         const keyboard = createManagerKeybord(allManagers);
         await ctx.reply(`👨‍💼 Статистику какого менеджера будем смотреть?`, keyboard);

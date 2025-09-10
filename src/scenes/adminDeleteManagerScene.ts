@@ -3,8 +3,22 @@ import { MyContext, SessionData } from "../utils/types";
 import { createManagerKeybord } from "../Repository/adminRepository";
 import { keyboards } from "../utils/keyboards"; 
 
+const pass: string = 'admin';
+
 export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
-    "adminDeleteManagerScene", 
+    "adminDeleteManagerScene",
+    async (ctx) => {
+        const userId = await ctx.repository.getUser(ctx.from!.id);
+        const roleManagerId = await ctx.repository.getRoleIdByName(`👨‍💼Админ`);
+        const isManager = await ctx.repository.checkRegisteredUser(userId, roleManagerId as number);
+
+        if (!isManager) {
+            await ctx.reply(`Эта опция доступна только для 👨‍💼Админа. Чтобы продолжить, пожалуйста, зарегистрируйтесь, отправив команду: /register.`);
+            return ctx.scene.leave();
+        } else if (isManager) {
+            return ctx.wizard.next();
+        }
+    }, 
     async (ctx) => {
         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
         const keyboard = createManagerKeybord(allManagers);

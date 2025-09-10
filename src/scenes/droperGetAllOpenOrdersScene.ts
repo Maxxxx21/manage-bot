@@ -1,34 +1,7 @@
-// import { Telegraf, Scenes, Markup } from "telegraf";
-// import { MyContext, SessionData } from "../utils/types";
-// import { Repository,  } from "../Repository/repository";
-
-// export const droperGetAllOpenOrdersScene = new Scenes.WizardScene<MyContext> (
-//     `droperGetAllOpenOrdersScene`,
-// async (ctx) => {
-//     const getAllOpenOrders = await ctx.repository.getAllOpenOrders();
-
-//     if(!getAllOpenOrders) {
-//         await ctx.reply(`В данный момент открытых ордеров нет.`);
-//         return ctx.scene.leave();
-//     }
-//     await ctx.reply(`Открытые ордера: `);
-
-
-//     for (let order of getAllOpenOrders) {
-//         const message = `Ордер №${order.id} \n\n1. Номер карты: ${order.number}\n\n2. Тип: ${order.fd_rd}\n\n3. ФИО: ${order.cardholder_name}\n\n4. Сумма: ${order.amount} €`;
-//         const keyboard = Markup.inlineKeyboard([
-//             Markup.button.callback(`Взять ордер.`, `take_order_${order.id}`)
-//         ])
-//         await ctx.reply(message, keyboard);
-//     };
-
-//     return ctx.scene.leave();
-// }
-// )
-
 import { Telegraf, Scenes, Markup } from "telegraf";
 import { MyContext, SessionData } from "../utils/types";
 import { Repository } from "../Repository/repository";
+import { keyboards } from "../utils/keyboards";
 
 export const droperGetAllOpenOrdersScene = new Scenes.WizardScene<MyContext>(
     `droperGetAllOpenOrdersScene`,
@@ -41,12 +14,12 @@ export const droperGetAllOpenOrdersScene = new Scenes.WizardScene<MyContext>(
         if (!isDroper) {
             await ctx.reply(`К сожалению, у Вас нет доступа. Зарегистрируйтесь как "⛑️Дропер", введя коменду: /register`);
             return ctx.scene.leave();
-        } else if (isDroper) {
-            return ctx.wizard.next();
         }
-    },
-    
-    async (ctx) => {
+        // } else if (isDroper) {
+        //     // return ctx.wizard.next();
+        // }
+
+    // async (ctx) => {
         const getAllOpenOrders = await ctx.repository.getAllOpenOrders();
 
         if (getAllOpenOrders.length === 0) {

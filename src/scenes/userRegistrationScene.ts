@@ -3,6 +3,10 @@ import { MyContext, SessionData } from "../utils/types";
 import { keyboards } from "../utils/keyboards";
 import { exitFunction } from "../utils/exitFunction";
 
+const passForManager: string = 'man';
+const passForDroper:string = 'drop';
+const passForAdmin:string = 'admin';
+
 export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
     `userRegistrationScene`,
     async (ctx) => {
@@ -81,7 +85,7 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.leave();
         }
 
-        if ((role === "👨‍💼Менеджер" && password !== 'man') || (role === "⛑️Дропер" && password !== 'drop') || (role === '👨‍💼Админ' && password !== 'admin')) {
+        if ((role === "👨‍💼Менеджер" && password !== passForManager) || (role === "⛑️Дропер" && password !== passForDroper) || (role === '👨‍💼Админ' && password !== passForAdmin)) {
             await ctx.reply(`❌ Неверный пароль. Попробуйте еще раз: `);
             return ctx.wizard.selectStep(1); // Шаг с вводом пароля
         }
