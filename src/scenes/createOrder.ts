@@ -18,7 +18,8 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
             await ctx.reply(`Эта опция доступна только для 👨‍💼Менеджеров. Чтобы продолжить, пожалуйста, зарегистрируйтесь, отправив команду: /register.`);
             return ctx.scene.leave();
         } else if (isManager) {
-            await ctx.reply(`🔒 Введите пароль: `, keyboards.exitKeyboard);
+            //await ctx.reply(`🔒 Введите пароль: `, keyboards.exitKeyboard);
+            await ctx.reply(`📝 Для создания ордера введите информацию в таком формате: \n💳 IBAN 💳\n👤 ФИО 👤 \n💵 Сумма 💵 `, keyboards.exitKeyboard);
             return ctx.wizard.next();
         }
     }, 
@@ -33,34 +34,37 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
 
     //     return ctx.wizard.next();
     // }, 
-    async (ctx) => { 
-        if(!ctx.message || !('text' in ctx.message)) {
-            await ctx.reply(`Произошла ошибка. Попробуйте еще раз.`, keyboards.confirmKeyboard);
-            return;
-        };
+    // async (ctx) => { 
+    //     if(!ctx.message || !('text' in ctx.message)) {
+    //         await ctx.reply(`Произошла ошибка. Попробуйте еще раз.`, keyboards.confirmKeyboard);
+    //         return;
+    //     };
 
-        if(ctx.message.text === '🚪Выйти') {
-            await exitFunction(ctx, ctx.message.text);
-        };
+    //     if(ctx.message.text === '🚪Выйти') {
+    //         await exitFunction(ctx, ctx.message.text);
+    //     };
 
-        if(ctx.message.text === password) {
-            await ctx.reply(`✅ Пароль верный.`);
-            await ctx.reply(`📝 Для создания ордера введите информацию в таком формате: \n💳 IBAN 💳\n👤 ФИО 👤 \n💵 Сумма 💵 `, keyboards.exitKeyboard);
-            return ctx.wizard.next();
-        } else if (ctx.message.text !== password) { 
-            await ctx.reply(`❌ Неверный пароль. Попробуйте еще раз.`);
+    //     if(ctx.message.text === password) {
+    //         await ctx.reply(`✅ Пароль верный.`);
+    //         await ctx.reply(`📝 Для создания ордера введите информацию в таком формате: \n💳 IBAN 💳\n👤 ФИО 👤 \n💵 Сумма 💵 `, keyboards.exitKeyboard);
+    //         return ctx.wizard.next();
+    //     } else if (ctx.message.text !== password) { 
+    //         await ctx.reply(`❌ Неверный пароль. Попробуйте еще раз.`);
 
-            if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
-            return;
-        }
-    }, 
+    //         if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+    //         return;
+    //     }
+    // }, 
     async (ctx) => {
         if(!ctx.message || !('text' in ctx.message)) {
             await ctx.reply(`❌ Произошла ошибка. \n\nВозвращаемся в главное меню...`, keyboards.startKeyboard);
             return;
         };
 
-        if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        // if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+         if(ctx.message.text === '🚪Выйти') {
+            await exitFunction(ctx, ctx.message.text);
+        };
 
         const inputLines = ctx.message.text.split(`\n`);
 

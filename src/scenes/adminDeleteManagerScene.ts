@@ -2,23 +2,50 @@ import { Scenes, Telegraf, } from "telegraf";
 import { MyContext, SessionData } from "../utils/types";
 import { createManagerKeybord } from "../Repository/adminRepository";
 import { keyboards } from "../utils/keyboards"; 
+import { exitFunction } from "../utils/exitFunction";
 
 const pass: string = 'admin';
 
 export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
     "adminDeleteManagerScene",
-    async (ctx) => {
-        const userId = await ctx.repository.getUser(ctx.from!.id);
-        const roleManagerId = await ctx.repository.getRoleIdByName(`👨‍💼Админ`);
-        const isManager = await ctx.repository.checkRegisteredUser(userId, roleManagerId as number);
+    // async (ctx) => {
+    //     const userId = await ctx.repository.getUser(ctx.from!.id);
+    //     const roleManagerId = await ctx.repository.getRoleIdByName(`👨‍💼Админ`);
+    //     const isManager = await ctx.repository.checkRegisteredUser(userId, roleManagerId as number);
 
-        if (!isManager) {
-            await ctx.reply(`Эта опция доступна только для 👨‍💼Админа. Чтобы продолжить, пожалуйста, зарегистрируйтесь, отправив команду: /register.`);
-            return ctx.scene.leave();
-        } else if (isManager) {
-            return ctx.wizard.next();
-        }
-    },
+    //     if (!isManager) {
+    //         await ctx.reply(`Эта опция доступна только для 👨‍💼Админа. Чтобы продолжить, пожалуйста, зарегистрируйтесь, отправив команду: /register.`);
+    //         return ctx.scene.leave();
+    //     } else if (isManager) {
+    //         return ctx.wizard.next();
+    //     }
+    // },
+    // async (ctx) => {
+    //     await ctx.reply(`🔒 Введите пароль: `, keyboards.exitKeyboard);
+    //     return ctx.wizard.next();
+    // },
+
+    // async (ctx) => {
+    //     if (!ctx.message || !('text' in ctx.message)) {
+    //         await ctx.reply(`Произошла ошибка. Выходим в меню.`, keyboards.startKeyboard);
+    //         return ctx.scene.leave();
+    //     };
+
+    //     if(await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+
+    //     if (ctx.message.text !== pass) {
+    //         await ctx.reply(`❌ Неверный пароль. Попробуйте заново.`);
+    //         return;
+    //     } else if( ctx.message.text === pass) {
+    //         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
+    //         const keyboard = createManagerKeybord(allManagers);
+    //         await ctx.reply(`✅ Пароль верный.`);
+    //         await ctx.reply(`Какого менеджера будем удалять?`, keyboard);
+
+    //         return ctx.wizard.next(); 
+    //     }
+    // },
+
     async (ctx) => {
         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
         const keyboard = createManagerKeybord(allManagers);
@@ -39,7 +66,7 @@ export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
         const keyboard = createManagerKeybord(allManagers);
 
         if(ctx.message.text === '🚪Выйти') {
-            await ctx.reply(`🔙 Выходим...`, keyboard);
+            await ctx.reply(`🔙 Выходим...`, keyboards.startKeyboard);
             return ctx.scene.leave();
         }
 
