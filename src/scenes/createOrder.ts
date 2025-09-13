@@ -103,7 +103,7 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
 
         if(exitFunctionResult) {
             return ctx.scene.leave();
-        }
+        };
  
 
         const fdOrRd = ctx.message.text.toLowerCase();

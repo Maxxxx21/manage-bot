@@ -18,7 +18,13 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
         if (!ctx.message || !('text' in ctx.message)) {
             await ctx.reply(`❌ Произошла ошибка. Пожалуйста, попробуйте еще раз.`);
             return;
-        }
+        };
+
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        };
 
         const role: string = ctx.message.text;
         const roles = ["👨‍💼Менеджер", "⛑️Дропер", '👨‍💼Админ'];
@@ -26,7 +32,7 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
         if (!roles.includes(role)) {
             await ctx.reply(`⚠️ Пожалуйста, выберите роль из предложенных.`);
             return ctx.wizard.back();
-        }
+        };
 
         await ctx.reply(`🔒 Введите пароль для регистрации: `);
         const wizardState = ctx.wizard.state as SessionData;
@@ -39,11 +45,7 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.reenter();
         }; 
 
-        // if(ctx.message.text === '🚪Выйти') {
-        //     return await exitFunction(ctx, ctx.message.text);
-        // };
-        //if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
-
+        
         const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
 
         if(exitFunctionResult) {
