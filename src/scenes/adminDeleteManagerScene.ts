@@ -65,8 +65,14 @@ export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
         const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
         const keyboard = createManagerKeybord(allManagers);
 
-        if(ctx.message.text === '🚪Выйти') {
-            await ctx.reply(`🔙 Выходим...`, keyboards.startKeyboard);
+        // if(ctx.message.text === '🚪Выйти') {
+        //     await ctx.reply(`🔙 Выходим...`, keyboards.startKeyboard);
+        //     return ctx.scene.leave();
+        // }
+
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
             return ctx.scene.leave();
         }
 

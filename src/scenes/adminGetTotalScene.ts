@@ -78,7 +78,16 @@ export const adminGetTotalScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.leave();
         }
 
-        if (await exitFunction(ctx, ctx.message.text)) return;
+        // if(ctx.message.text === '🚪Выйти') {
+        //     return await exitFunction(ctx, ctx.message.text);
+        // };
+
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            await ctx.reply(`Выходим из сцены...`)
+            return ctx.scene.leave();
+        }
 
         const wizardState = ctx.wizard.state as SessionData;
         const managerToGetTotal: string = ctx.message.text; 
@@ -102,7 +111,11 @@ export const adminGetTotalScene = new Scenes.WizardScene<MyContext>(
             return; 
         }
 
-        if (await exitFunction(ctx, ctx.message.text)) return;
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        }
         
         const fdOdRdOrTotal: string = ctx.message.text.toLowerCase();
         const wizardState = ctx.wizard.state as SessionData;
@@ -133,7 +146,11 @@ export const adminGetTotalScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.leave();
         }
 
-        if (await exitFunction(ctx, ctx.message.text)) return;
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        }
 
         const userInput: string = ctx.message.text;
         const date = processDateInput(userInput); 

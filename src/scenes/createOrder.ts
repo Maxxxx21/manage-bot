@@ -62,9 +62,15 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
         };
 
         // if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
-         if(ctx.message.text === '🚪Выйти') {
-            await exitFunction(ctx, ctx.message.text);
-        };
+        //  if(ctx.message.text === '🚪Выйти') {
+        //     return await exitFunction(ctx, ctx.message.text);
+        // };
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            await ctx.reply(`Выходим из сцены...`)
+            return ctx.scene.leave();
+        }
 
         const inputLines = ctx.message.text.split(`\n`);
 
@@ -93,7 +99,12 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
             return;
         };
 
-        if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        }
+ 
 
         const fdOrRd = ctx.message.text.toLowerCase();
         const wizardState = ctx.wizard.state as SessionData;
@@ -132,7 +143,14 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
             return;
         };
 
-        if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            await ctx.reply(`Выходим из сцены...`)
+            return ctx.scene.leave();
+        }
+
+        // if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
 
         const confirm = ctx.message.text; 
 

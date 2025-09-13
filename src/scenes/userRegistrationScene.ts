@@ -39,7 +39,16 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.reenter();
         }; 
 
-        if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        // if(ctx.message.text === '🚪Выйти') {
+        //     return await exitFunction(ctx, ctx.message.text);
+        // };
+        //if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        }
 
         if (!ctx.from) {
             console.error(`Не удалось получить информацию о пользователе. (ctx.from)`);

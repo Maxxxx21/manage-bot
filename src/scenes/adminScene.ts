@@ -21,7 +21,18 @@ export const adminScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.leave();
         };
     
-        if(await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        //if(await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        
+        // if(ctx.message.text === '🚪Выйти') {
+        //     return await exitFunction(ctx, ctx.message.text);
+        // };
+
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            await ctx.reply(`Выходим из сцены...`)
+            return ctx.scene.leave();
+        }
     
         if (ctx.message.text !== pass) {
             await ctx.reply(`❌ Неверный пароль. Попробуйте заново.`);
@@ -46,7 +57,16 @@ export const adminScene = new Scenes.WizardScene<MyContext>(
             return;
         }
 
-        if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
+        const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        if(exitFunctionResult) {
+            return ctx.scene.leave();
+        }
+
+        // if(ctx.message.text === '🚪Выйти') {
+        //     return await exitFunction(ctx, ctx.message.text);
+        // };
+        // //if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
 
         const action = ctx.message.text;
         
