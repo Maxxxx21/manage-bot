@@ -12,7 +12,7 @@ export const MyRolesButtonScene = new Scenes.WizardScene<MyContext>(
         const roleDroperId = await ctx.repository.getRoleIdByName(`⛑️Дропер`);
 
         if (!userId) {
-            await ctx.reply(`😟 У Вас нет ролей. Пожалуйста, зарегистрируйтесь. 😟`, keyboards.startKeyboard);
+            await ctx.reply(`😟 У Вас нет ролей. Пожалуйста, зарегистрируйтесь. 😟\nДля регистрации напишите: /register.`, keyboards.startKeyboard);
             return ctx.scene.leave();
         }
 
@@ -30,7 +30,7 @@ export const MyRolesButtonScene = new Scenes.WizardScene<MyContext>(
             message += `🕺🏽Дропер: ${userId}`;
         }
         else {
-            message = `😟 У Вас нет ролей. Пожалуйста, зарегистрируйтесь. 😟`;
+            message = `😟 У Вас нет ролей. Пожалуйста, зарегистрируйтесь. 😟\nДля регистрации напишите: /register.`;
         }
 
         await ctx.reply(message);

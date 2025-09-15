@@ -7,6 +7,20 @@ import { exitFunction } from "../utils/exitFunction";
 
 const password = "man";
 
+const formatedDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    const formattedDate = `${day}.${month}.${year}`;
+    const formattedTime = `${hours}:${minutes}`;
+
+    return {formattedDate, formattedTime}; 
+};
+
 export const createOrderScene = new Scenes.WizardScene<MyContext>(
     `createOrderScene`,
     async (ctx) => {
@@ -121,7 +135,8 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
                 let message: string = `⚠️ По данному IBAN ${wizardState.number} были обнаружены следующие ордера:\n\n`;
 
                 for (let order of ordersWithTheSameIban) {
-                    message += `\n\nОрдер №${order.id}\n💳 Номер карты: ${order.number}\n✍️ Тип: ${(order.fd_rd).toUpperCase()}\n👤 ФИО: ${order.cardholder_name}\n💵 Сумма: ${order.amount} €\n-------------------------`;
+                    const dateTime = formatedDateTime(order.created_at)
+                    message += `\n\nОрдер №${order.id}\n💳 Номер карты: ${order.number}\n✍️ Тип: ${(order.fd_rd).toUpperCase()}\n👤 ФИО: ${order.cardholder_name}\n💵 Сумма: ${order.amount} €\n🕰️Дата создания: ${dateTime.formattedDate} ${dateTime.formattedTime}\n-------------------------`;
                 };
 
                 await ctx.reply(message, keyboards.confirmKeyboard);

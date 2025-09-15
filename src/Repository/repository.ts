@@ -276,7 +276,7 @@ export class Repository implements IOrderRepository{
 
         async getOrdersByIbanFd(number: string) {
             const queryText = `
-            SELECT id, number, cardholder_name, fd_rd, amount FROM orders WHERE number = $1;
+            SELECT id, number, cardholder_name, fd_rd, amount, created_at FROM orders WHERE number = $1;
             `;
 
             const params = [number];
