@@ -197,7 +197,7 @@ export const createOrderScene = new Scenes.WizardScene<MyContext>(
 
             const allUsersByRole = await ctx.repository.getAllDropers();
             
-            const messageText = `✨ Новый ордер №${newOrder.id} создан:\n\n💳 Номер карты: ${newOrder.number}\n✍️ Тип: ${newOrder.fd_rd}\n👤 ФИО: ${newOrder.cardholder_name}\n💵 Сумма: ${newOrder.amount} €`;
+            const messageText = `✨ Новый ордер №${newOrder.id} создан:\n\n💳 Номер карты: ${newOrder.number}\n✍️ Тип: ${(newOrder.fd_rd).toUpperCase()}\n👤 ФИО: ${newOrder.cardholder_name}\n💵 Сумма: ${newOrder.amount} €`;
             let successCount = 0;
             
             const takeOrderKeyboard = Markup.inlineKeyboard([

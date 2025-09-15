@@ -34,11 +34,10 @@ export const droperScene = new Scenes.WizardScene<MyContext>(`droperScene`,
             return ctx.scene.leave();
         } else if (isDroper) {
             await ctx.reply(`🛃Идет проверка, ожидайте, пожалуйста.`);
-            return ctx.wizard.next();
         }
-    },
+    // },
     
-    async (ctx) => {
+    // async (ctx) => {
         const orderId = ctx.session.orderId;
 
         if(!orderId) {
@@ -56,6 +55,11 @@ export const droperScene = new Scenes.WizardScene<MyContext>(`droperScene`,
             }
 
             await ctx.reply(`✅ Вы взяли ордер №${orderId}. \n\nПросим Вас прислать фото или комментарий.`);
+            const order = await ctx.repository.getOrderById(orderId);
+            const manager = order.manager_id;
+            const telegramIdManager = await ctx.repository.getTelegramIdById(manager);
+            const message1 = `✅ Дроппер ${droperId} взял Ваш Ордер №${order.id}`; 
+            const messageToManager = await ctx.telegram.sendMessage(telegramIdManager, message1 );
             return ctx.wizard.next();
         } catch(error) { 
             console.error(`Не получилось обновить статус ордера.`, error);
@@ -75,8 +79,8 @@ export const droperScene = new Scenes.WizardScene<MyContext>(`droperScene`,
 
             const manager = order.manager_id;
             const telegramIdManager = await ctx.repository.getTelegramIdById(manager);
-            const message1 = `✅ Дроппер ${droperId} взял Ваш Ордер №${order.id}`; 
-            const messageToManager = await ctx.telegram.sendMessage(telegramIdManager, message1 );
+            //const message1 = `✅ Дроппер ${droperId} взял Ваш Ордер №${order.id}`; 
+            //const messageToManager = await ctx.telegram.sendMessage(telegramIdManager, message1 );
 
             try { 
                 await ctx.repository.addScreenshot(order.id, fileId);
@@ -107,7 +111,7 @@ export const droperScene = new Scenes.WizardScene<MyContext>(`droperScene`,
             const droperCommnet: string = ctx.message.text;
             try { 
                 const success = await ctx.repository.insertCommentInOrder(order.id, droperCommnet);
-                const sendMessage = await ctx.telegram.sendMessage(telegramIdManager, `Дроппер ${droperId} добавил комментарий к ордеру №${order.id}:\n\n${droperCommnet}`);
+                const sendMessage = await ctx.telegram.sendMessage(telegramIdManager, `❌ Дроппер ${droperId} добавил комментарий к ордеру №${order.id}:\n\n${droperCommnet}`);
                 const updateStatus = await ctx.repository.updateOrderStatus(order.id, 'failed');
 
                 if(success && sendMessage && updateStatus) {

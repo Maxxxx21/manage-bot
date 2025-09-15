@@ -60,21 +60,22 @@ export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
             await ctx.reply(`❌ Проиошла ошибка. Вы вышли в главное меню.`);
             await ctx.reply(`➡️ Выберите роль для дальнейших действий: `, keyboards.startKeyboard);
             return ctx.scene.leave();
-        }
-
-        const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
-        const keyboard = createManagerKeybord(allManagers);
-
-        // if(ctx.message.text === '🚪Выйти') {
-        //     await ctx.reply(`🔙 Выходим...`, keyboards.startKeyboard);
-        //     return ctx.scene.leave();
-        // }
+        };
 
         const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
 
         if(exitFunctionResult) {
             return ctx.scene.leave();
         }
+
+        const allManagers = await ctx.adminRepository.getAllManagersForAdmin();
+        const keyboard = createManagerKeybord(allManagers);
+
+        // const exitFunctionResult = await exitFunction(ctx, ctx.message.text);
+
+        // if(exitFunctionResult) {
+        //     return ctx.scene.leave();
+        // }
 
         const managerIdUserInput: string = ctx.message.text;
         const managerIdUnprocessed: string[] = managerIdUserInput.split(' ');
@@ -94,22 +95,14 @@ export const adminDeleteManagerScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.reenter();
         }
 
-        const deleteUserRoleResult = await ctx.adminRepository.deleteUserRole(managerId, roleId);
-
-        if(!deleteUserRoleResult) { 
-            console.error(`Произошла ошибка при удалении роли.`);
-            await ctx.reply(`❌ Произошла ошибка, попробуйте заново.`, keyboard);
-            return ctx.scene.reenter();
-        }
-
-        const deleteUserResult = await ctx.adminRepository.deleteUser(managerId);
+        const deactivateUser = await ctx.adminRepository.doActivateOrDeactivateUser(managerId, false);
         
-        if (!deleteUserResult) {
+        if (!deactivateUser) {
             console.error(`Произошла ошибка при удалении пользователя.`);
             await ctx.reply(`❌ Произошла ошибка, попробуйте заново.`, keyboard);
         } 
 
-        await ctx.reply(`✅ Менеджер ${managerId} был успешно удален. \n\n➡️ Выберите роль для дальнейших действий:`, keyboards.startKeyboard);
+        await ctx.reply(`🗑️↩️ Менеджер ${managerId} был успешно удален ✅. \n\n➡️ Выберите роль для дальнейших действий:`, keyboards.startKeyboard);
         return ctx.scene.leave(); 
     }
 );

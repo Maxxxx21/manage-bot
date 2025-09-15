@@ -82,7 +82,8 @@ bot.action(/take_order_(\d+)/, async (ctx: MyContext) => {
     const orderId = parseInt(match[1], 10);
 
     const telegram_id: number = ctx.from!.id;
-    const dropperRoleId: number | null  = await ctx.repository.getRoleIdByName('Дропер');
+    const dropperRoleId: number | null  = await ctx.repository.getRoleIdByName('⛑️Дропер');
+    console.log(dropperRoleId);
 
     if(dropperRoleId === null) {
         await ctx.reply(`❌ Произошла ошибка. `); 

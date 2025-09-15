@@ -111,8 +111,12 @@ export class Repository implements IOrderRepository{
         async checkRegisteredUser(user_id: number, role_id: number) {
             const queryText = `
             SELECT EXISTS (
-                SELECT 1 FROM user_roles
-                WHERE user_id = $1 AND role_id = $2
+                SELECT 1 
+                FROM user_roles ur
+                JOIN users u ON ur.user_id = u.id
+                WHERE user_id = $1
+                    AND role_id = $2
+                    AND u.is_active = TRUE
             );
             `;
 
@@ -158,12 +162,15 @@ export class Repository implements IOrderRepository{
         async getUserWithRole(userId: number, roleId: number | null) {
             const queryText = `
             SELECT
-                user_id,
-                role_id
+                ur.user_id,
+                ur.role_id
             FROM
-                user_roles
+                user_roles ur
+            JOIN users u ON ur.user_id = u.id
             WHERE
-                user_id = $1 AND role_id = $2;
+                ur.user_id = $1
+                AND ur.role_id = $2
+                AND u.is_active = TRUE; 
             `;
 
             const params = [userId, roleId];

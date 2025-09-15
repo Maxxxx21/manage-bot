@@ -63,11 +63,6 @@ export const adminScene = new Scenes.WizardScene<MyContext>(
             return ctx.scene.leave();
         }
 
-        // if(ctx.message.text === '🚪Выйти') {
-        //     return await exitFunction(ctx, ctx.message.text);
-        // };
-        // //if (await exitFunction(ctx, ctx.message.text)) return ctx.scene.leave();
-
         const action = ctx.message.text;
         
         

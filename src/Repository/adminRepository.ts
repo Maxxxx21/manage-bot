@@ -4,12 +4,13 @@ import { Markup } from "telegraf";
 
 export interface IAdminRepository {
     getAllManagersForAdmin():any;
-    deleteUserRole(userId: number, roleId: number | null): any;
-    deleteUser(id: number): any;
+    //deleteUserRole(userId: number, roleId: number | null): any;
+    doActivateOrDeactivateUser(id: number, value: boolean): any;
     getTotalFdOrRdAmountbyManager(id: number, fd_rd_total: string, startDate: string, endDate: string): any;
     getTotalAmountByManager(id: number, startDate: string, endDate: string): any;
     getAllFdOrRdOrdersByManager(id: number, fd_rd_total: string, startDate: string, endDate: string): any;
     getAllOrdersByManager(id: number, startDate: string, endDate: string): any;
+    userIsActivatedOrIsDeactivated(telegramId: number): any;
     
 }
 
@@ -24,19 +25,19 @@ export class adminRepository implements IAdminRepository {
             FROM users u
             JOIN user_roles ur ON u.id = ur.user_id
             JOIN roles r ON ur.role_id = r.id
-            WHERE r.role = '👨‍💼Менеджер';
+            WHERE r.role = '👨‍💼Менеджер' AND u.is_active = TRUE
             `; 
 
             const result = await this.pool.query(queryText)
             return result.rows.map(row => ({id: row.id, name: `Менеджер ${row.id}`}));
-        };   
-        
-        async deleteUserRole(userId: number, roleId: number | null) {
+        };    
+
+        async doActivateOrDeactivateUser(id: number, value: boolean) {
             const queryText = `
-            DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2
+            UPDATE users SET is_active = $2 WHERE id = $1 
             `;
 
-            const params = [userId, roleId];
+            const params = [id, value];
             const result = await this.pool.query(queryText, params);
 
             if ((result.rowCount ?? 0) > 0 ) { 
@@ -44,22 +45,7 @@ export class adminRepository implements IAdminRepository {
             } else {
                 return false;
             };
-         }; 
-
-         async deleteUser(id: number) {
-            const queryText = `
-            DELETE FROM users WHERE id = $1 
-            `;
-
-            const params = [id];
-            const result = await this.pool.query(queryText, params);
-
-            if ((result.rowCount ?? 0) > 0 ) { 
-                return true;
-            } else {
-                return false;
-            };
-         };
+        };
 
          async getTotalFdOrRdAmountbyManager(id: number, fd_rd_total: string, startDate: string, endDate: string) {  // функция получения общей сумму ордеров по fd или rd
              const queryText = `
@@ -121,7 +107,12 @@ export class adminRepository implements IAdminRepository {
              const params = [id, startDate, endDate]; 
              const result = await this.pool.query(queryText, params); 
              return result.rows;
-         }
+         };
+        async userIsActivatedOrIsDeactivated(telegramId: number) {
+            const queryText = `
+            SELECT is_active FROM users WHERE telegram_id = $1; 
+            `
+        }
 };
 
 

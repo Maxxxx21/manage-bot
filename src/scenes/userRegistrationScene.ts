@@ -66,6 +66,7 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
             const existingUser = await ctx.repository.getUser(telegram_id);
             if (existingUser) {
                 userId = existingUser;
+                await ctx.adminRepository.doActivateOrDeactivateUser(userId, true);
             } else {
                 const newUser = await ctx.repository.addUser(telegram_id);
                 if (!newUser) throw new Error(`Не удалось добавить нового пользователя.`);
@@ -102,10 +103,11 @@ export const userRegistrationScene = new Scenes.WizardScene<MyContext>(
         }
 
         try {
+            await ctx.adminRepository.doActivateOrDeactivateUser(userId, true);
             const isRegistered: boolean = await ctx.repository.getUserWithRole(userId, roleId);
 
             if (isRegistered) {
-                await ctx.reply(`ℹ️ Вы уже зарегистрированы как ${role}.`);
+                await ctx.reply(`✅ Вы снова зарегистрировались как ${role}.`);
                 await ctx.reply(`➡️ Выберите дальнейшие действия: `, keyboards.startKeyboard);
                 console.log(`Юзер ${userId} уже был зарегистрирован как ${role}.`);
                 return ctx.scene.leave();
